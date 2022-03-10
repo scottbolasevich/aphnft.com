@@ -1,0 +1,243 @@
+@import "~@blueprintjs/core/lib/scss/variables" ;
+
+
+$background-color: #313131;
+$darker:  $light-gray3;
+
+//$background-color: $dark-gray5;
+//$darker:  $dark-gray3;
+
+body {
+	background-color: $background-color;
+}
+
+.bp3-navbar {
+	background-color: #385898;
+	border-radius: 5px;
+}
+.bp3-button .bp3-icon, .bp3-button .bp3-icon-standard, .bp3-button .bp3-icon-large {
+	color: #313131;
+}
+.bp3-navbar .bp3-button-text {
+	color: #ffffff;
+}
+.price-filter {
+	color: #bababa;
+}
+.filtered-listings {
+	color: #bababa;
+}
+.price-filter .bp3-button.bp3-outlined {
+	background-color: #385898;
+}
+.container {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: space-around;
+	align-items: center;
+	padding: 20px;
+}
+
+.vertical-container {
+	display: flex;
+	flex-flow: column;
+	justify-content: space-around;
+	align-items: center;
+	padding: 20px;
+}
+
+.container-right {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: flex-end;
+	align-items: center;
+	padding: 10px;
+	button {
+		margin: 5px;
+	}
+}
+.content-piece {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 90%;
+	height: 250px;
+	padding: 10px;
+	margin: 10px;
+	background: $darker;
+	box-shadow: $pt-elevation-shadow-2;
+	img {
+		height: 100%;
+	}
+}
+.content-card {
+	margin: 10px;
+	width: 30%;
+}
+.details-basic {
+	flex-grow: 1;
+	padding: 10px;
+	margin: 10px;
+}
+.details-description {
+	flex-grow: 1;
+	padding: 10px;
+	margin: 10px;
+}
+.token-mint {
+	width: 100%;
+}
+.token-details {
+	flex-grow: 1;
+	padding: 10px;
+	margin: 10px;
+}
+.container-mint {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: flex-end;
+	padding: 20px;
+}
+.content-viewer {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	padding: 10px;
+	img {
+		width: 100%;
+	}
+}
+
+.wallet-option-list {
+	list-style: none;
+	li {
+		margin: 1em;
+	}
+}
+
+.wallet-option {
+	display: flex;
+	align-items: center;
+	.wallet-branding {
+		width: 2em;
+		margin-right:0.5em
+	}
+}
+
+.nft-card {
+	width: 30vw;
+	img {
+		width: 100%;
+		box-shadow: $pt-elevation-shadow-2;
+	}
+}
+.listing-card {
+	width: 25vw;
+	margin: 15px;
+	img {
+		width: 100%;
+		box-shadow: $pt-elevation-shadow-2;
+	}
+}
+
+.listing-tags {
+	flex-basis:  40%;
+}
+
+.listing-card-tags {
+	padding: 8px;
+	border-radius: 5px;
+	justify-content: space-evenly;
+	a {
+		margin:5px;
+	}	
+}
+
+.listing-page {
+	.bp3-card {
+		width: 66vw;
+	}
+}
+
+.nft-image {
+	img {
+		box-shadow: $pt-elevation-shadow-2;
+		width: 100%;
+	}
+}
+.nft-display {
+	justify-content: center;
+	.bp3-card {
+		width: 66vw;
+	}
+}
+
+.nft-details {
+	justify-content: space-between;
+}
+.nft-description {
+	justify-content: left;
+	width: 50%;
+}
+
+.listing-actions {
+	justify-content: space-between;
+}
+
+.listing-price-edit {
+	justify-content: space-between;
+	button {
+		margin: 5px;
+	}
+}
+
+.listing-buy {
+	align-items: baseline;
+}
+
+.portfolio-content {
+	justify-content: left;
+	width: 66em;
+	box-shadow: 0.3em 0.3em $white;
+}
+
+.portfolio-name {
+	justify-content: left;
+	width: 100%;
+}
+.config-container {
+	.bp3-tab-panel {
+		width: 60em;
+	}
+	align-items: flex-end;
+	.bp3-input-group {
+		margin: 5px;
+	}
+}
+button {
+	margin: 5px;
+}
+.config-text-container {
+	pre {
+		display: block;
+		height: 42em;
+	}
+	display: block;
+	width: 69em;
+}
+.price-filter {
+	label.bp3-label {
+		margin-bottom: 0px;
+	}
+	button {
+		margin-bottom:0px;
+	}
+	align-items: flex-end;
+}
+
+.popup-request {
+	position:fixed;
+	top:50%;
+	left:50%;
+	transform:translate(-50%,-50%);
+}
