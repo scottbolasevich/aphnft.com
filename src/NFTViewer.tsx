@@ -264,7 +264,7 @@ function ConfirmListingDetails(props){
             <h3>Listing:</h3>
             <p><b>Token:</b> {props.tokenId} </p>
             <p><b>Price:</b> {props.price} μAlgos</p> 
-            <p><b>Tags:</b> {props.tags.map(t=>{return <Tag key={t.id} intent='primary'>{t.name}</Tag>})}</p>
+            <p><b>Tags:</b> {props.tags.map(t=>{return <Tag>{t.name}</Tag>})}</p>
         </Container>
     )
 }

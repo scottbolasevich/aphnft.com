@@ -6,7 +6,7 @@ import * as React from 'react'
 import {Transaction} from 'algosdk'
 import { useParams, useHistory } from 'react-router-dom'
 import { NumericInput } from '@blueprintjs/core'
-import { Button, Box, Container, Image, Text, HStack, NumberInput, NumberInputField } from '@chakra-ui/react';
+import { Button, Box, Container, Image, Text, HStack, Link, NumberInput, NumberInputField } from '@chakra-ui/react';
 
 import { 
     getListing, 
@@ -126,15 +126,18 @@ function ListingViewer(props: ListingViewerProps) {
         let tagsComponent = <div className='container listing-card-tags'>
             {
                 listing.tags.map((t)=>{
-                    return <Button 
+                    /* return <Button 
                         key={t.id} 
                         variant='outlined'
-                        href={'/tag/'+ t.name}>{t.name}</Button>
+                        href={'/tag/'+ t.name}>{t.name}</Button> */
+                       return <Link href={'/tag/'+ t.name}><Button as="a">{t.name}</Button></Link>
                 })
             } 
+        
         </div>
 
-        let buttons = <Button loading={loading} disabled={props.wallet===undefined} onClick={handleBuy}>Buy</Button>
+        //let buttons = <Button loading={loading} disabled={props.wallet===undefined} onClick={handleBuy}>Buy</Button>
+        let buttons = <Button isLoading={loading} isDisabled={props.wallet===undefined} onClick={handleBuy}>Buy</Button>
 
         let priceComponent = (
             <Container>

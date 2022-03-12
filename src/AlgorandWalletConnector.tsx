@@ -67,10 +67,10 @@ export function AlgorandWalletConnector(props:AlgorandWalletConnectorProps)  {
     }
 
     const walletOptions = []
-    for(const [k,v] of Object.entries(allowedWallets).splice(0, 2)){
+    for(const [k,v] of Object.entries(allowedWallets).splice(0, 3)){
         walletOptions.push((
         <div key={k}>
-            <Button id={k} leftIcon={<img width='50px' height='50px' src={v.img(props.darkMode)} />} size='lg' variant='outline' onClick={handleSelectedWallet}> 
+            <Button width='100%' id={k} leftIcon={<img width='50rem' src={v.img(props.darkMode)} />} size='lg' variant='outline' onClick={handleSelectedWallet}> 
                 {v.displayName()}
             </Button>
         </div>
@@ -87,7 +87,7 @@ export function AlgorandWalletConnector(props:AlgorandWalletConnectorProps)  {
                         Select Wallet
                         </ModalHeader>
                         <ModalBody>
-                            <VStack>
+                            <VStack align='stretch'>
                                 {walletOptions}
                             </VStack>
                         </ModalBody>

@@ -15,7 +15,7 @@
         "display":"https://cloudflare-ipfs.com/ipfs/",
         "token":"YOUR nft.storage TOKEN" 
     },
-    "explorer":"algoscan.app",
+    "explorer":"algoexplorer.io",
     "application": {
         "admin_addr": "YOUR ADDRESS",
         "app_id": 0,

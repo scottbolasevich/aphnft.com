@@ -107,14 +107,7 @@ export default function App(props: AppProps) {
 
   let adminNav = <div/>
   if(connected  && (ps.application.admin_addr == "" || acct == ps.application.admin_addr)) {
-    adminNav = <Link icon='key' href="/admin">Admin</Link>
-  }
-
-  let mint = <div/>
-  let portfolio = <div/>
-  if(connected){
-    mint =<NavLink>mint</NavLink>
-    portfolio = <NavLink>portfolio</NavLink>
+    adminNav = <Link href="/admin">Admin</Link>
   }
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -139,8 +132,8 @@ export default function App(props: AppProps) {
                 {Links.map((link) => (
                   <NavLink key={link}>{link}</NavLink>
                 ))}
-                {mint}
-                {portfolio}
+                {connected ? (<NavLink>mint</NavLink>) : null}
+                {connected ? (<NavLink>portfolio</NavLink>) : null}
               </HStack>
             </HStack>
             <Flex alignItems={'center'}>
@@ -180,6 +173,8 @@ export default function App(props: AppProps) {
                 {Links.map((link) => (
                   <NavLink key={link}>{link}</NavLink>
                 ))}
+                {connected ? (<NavLink>mint</NavLink>) : null}
+                {connected ? (<NavLink>portfolio</NavLink>) : null}
               </Stack>
             </Box>
           ) : null}

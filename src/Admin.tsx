@@ -172,12 +172,31 @@ export default function Admin(props: AdminProps) {
         <div>
             <div className='container'>
                 <Box>
-                    <Tabs id='configuration' vertical={true}>
-                        <Tab id='app' panel={ appComponent } />App
-                        <Tab id='algod' panel={<Algod setProp={setAlgodValue} {...algod} />}>Algod</Tab>
-                        <Tab id='index' panel={ <Indexer setProp={setIndexerValue} {...indexer} /> }>Indexer</Tab>
-                        <Tab id='ipfs' panel={ <IPFSConfig setProp={setIpfsValue} {...ipfs} /> }>Ipfs</Tab>
-                        <Tab id='tags' panel={ <TagCreator loading={loading} searchForTags={searchForTags} handleAdd={handleTagAdd} handleRemove={handleTagRemove} tags={tags} />}>Tags</Tab>
+                    <Tabs>
+                        <TabList>
+                            <Tab>App</Tab>
+                            <Tab>Algod</Tab>
+                            <Tab>Indexer</Tab>
+                            <Tab>Ipfs</Tab>
+                            <Tab>Tags</Tab>
+                        </TabList>
+                        <TabPanels>
+                            <TabPanel p={4}>
+                                { appComponent }
+                            </TabPanel>
+                            <TabPanel p={4}>
+                                <Algod setProp={setAlgodValue} {...algod}/>
+                            </TabPanel>
+                            <TabPanel p={4}>
+                                <Indexer setProp={setIndexerValue} {...indexer} /> 
+                            </TabPanel>
+                            <TabPanel p={4}>
+                                <IPFSConfig setProp={setIpfsValue} {...ipfs} /> 
+                            </TabPanel>
+                            <TabPanel p={4}>
+                                <TagCreator loading={loading} searchForTags={searchForTags} handleAdd={handleTagAdd} handleRemove={handleTagRemove} tags={tags} />
+                            </TabPanel>
+                        </TabPanels>
                     </Tabs>
                     <div className='container config-text-container'>
                         <SyntaxHighlighter language='json' style={docco} wrapLongLines={true}>

@@ -1,7 +1,7 @@
 'use strict'
 
 import * as React from 'react'
-import { Button, Container } from '@chakra-ui/react';
+import { Button, Container, Link } from '@chakra-ui/react';
 import { Listing } from './lib/listing'
 
 
@@ -27,11 +27,7 @@ export function ListingCard(props: ListingCardProps) {
             <Container>
                 {
                     l.tags.map((t)=>{
-                        return <Button 
-                            key={t.id} 
-                            variant='outlined'
-                            href={'/tag/'+ t.name} 
-                        >{t.name}</Button>
+                        return <Link href={'/tag/'+ t.name}><Button as="a">{t.name}</Button></Link>
                     })
                 } 
             </Container>
