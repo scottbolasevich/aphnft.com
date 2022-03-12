@@ -3,13 +3,10 @@
 
 import * as React from 'react'
 import {useHistory, useParams, useLocation} from 'react-router-dom'
-
 import { getListings } from './lib/algorand'
 import {ListingCard} from './ListingCard'
-
 import {Wallet} from 'algorand-session-wallet'
-import { Button, Label, NumericInput } from '@blueprintjs/core'
-
+import { Button, Container, FormLabel, NumberInput, NumberInputField, Stack } from '@chakra-ui/react';
 
 type BrowserProps = {
     history: any
@@ -49,8 +46,8 @@ export default function Browser(props: BrowserProps) {
         return ()=>{subscribed = false}
     }, [filtersChanged])
 
-    function updateMaxPrice(val: number){ setMaxPrice(val) }
-    function updateMinPrice(val: number){ setMinPrice(val) }
+    function updateMaxPrice(val){ setMaxPrice(val) }
+    function updateMinPrice(val){ setMinPrice(val) }
 
     function filterListings() { 
         const tagPath = tag?"tag/"+tag:""
@@ -72,25 +69,29 @@ export default function Browser(props: BrowserProps) {
 
     // Only allow filtering by price if no tag is chosen
     const priceFilter = tag===undefined?(
-        <div className='container price-filter'>
-            <Label className='bp3-inline'>
+        <Container>
+            <FormLabel>
                 Minimum Price
-                <NumericInput placeholder={"Minimum Price"} large={true} onValueChange={updateMinPrice} value={minPrice} buttonPosition='none'/>
-            </Label>
-            <Label className='bp3-inline'>
-                Maximum Price
-                <NumericInput placeholder={"Maximum Price"} large={true} onValueChange={updateMaxPrice} value={maxPrice} buttonPosition='none' />
-            </Label>
-            <Button outlined={true} large={true} minimal={true} text='Filter' onClick={filterListings} />
-        </div>
-    ):<div></div>
+            </FormLabel>
+            <NumberInput size='s' defaultValue={minPrice} maxW={150} min={0} max={999999999} onChange={updateMinPrice}>
+                <NumberInputField placeholder={"Minimum Price"} />
+            </NumberInput>
+            <FormLabel>
+                Maximum price
+            </FormLabel>
+            <NumberInput size='s' defaultValue={maxPrice} maxW={150} min={0} max={999999999} onChange={updateMaxPrice}>
+                <NumberInputField placeholder={"Maximum Price"} />
+            </NumberInput>
+            <Button colorScheme='blue' onClick={filterListings}>Filter</Button>
+        </Container>
+    ):<Container></Container>
 
     return (
-        <div className='vertical-container' >
+        <Stack spacing={3}>
             {priceFilter}
-            <div className='container filtered-listings' >
+            <Container>
                 { l }
-            </div>
-        </div>
+            </Container>
+        </Stack>
     )
 }

@@ -5,7 +5,8 @@ import * as React from 'react'
 
 import {Transaction} from 'algosdk'
 import { useParams, useHistory } from 'react-router-dom'
-import { AnchorButton, Button, NumericInput, Card, Elevation } from '@blueprintjs/core'
+import { NumericInput } from '@blueprintjs/core'
+import { Button, Box, Container, Image, Text, HStack } from '@chakra-ui/react';
 
 import { 
     getListing, 
@@ -125,14 +126,10 @@ function ListingViewer(props: ListingViewerProps) {
         let tagsComponent = <div className='container listing-card-tags'>
             {
                 listing.tags.map((t)=>{
-                    return <AnchorButton 
+                    return <Button 
                         key={t.id} 
-                        large={true}
-                        minimal={true}
-                        outlined={true}
-                        href={'/tag/'+ t.name} 
-                        text={t.name} 
-                    />
+                        variant='outlined'
+                        href={'/tag/'+ t.name}>{t.name}</Button>
                 })
             } 
         </div>
@@ -140,9 +137,9 @@ function ListingViewer(props: ListingViewerProps) {
         let buttons = <Button loading={loading} disabled={props.wallet===undefined} onClick={handleBuy}>Buy</Button>
 
         let priceComponent = (
-            <div className='container listing-price' >
+            <Container>
                 <p>{listing.price} μAlgos</p>
-            </div>
+            </Container>
         )
 
         if (props.wallet !== undefined && listing.creator_addr == props.wallet.getDefaultAccount()){
@@ -157,69 +154,56 @@ function ListingViewer(props: ListingViewerProps) {
             )
 
             priceComponent = (
-                <div className='container listing-price-edit'>
+                <HStack sx={{ '.bp3-input': { color: 'gray.700' } }}>
                     <NumericInput 
                         onValueChange={checkSetPrice}
                         defaultValue={listing.price} 
                         min={1} 
                         max={10000} 
-                        buttonPosition={"none"} 
                     />
                     <Button 
-                        loading={loading} 
-                        intent="none" 
                         onClick={handleUpdatePrice} 
-                        disabled={!updateable}
-                        text='Reprice' />
-                </div>
+                        disabled={!updateable}>Reprice</Button>
+                </HStack>
             )
 
-            buttons = (
-                <div>
-                    <Button loading={loading} intent="warning" onClick={handleCancelListing} text='Cancel Listing' />
-                </div>
-            )
+            buttons = (<Button onClick={handleCancelListing}>Cancel Listing</Button>)
         }
 
         const deets = listing.nft.metadata
         return (
-            <div className='container listing-page'>
-                <Card elevation={Elevation.TWO}>
-                    <div className='content nft-image' >
-                        <img className='content-img' src={listing.nft.imgSrc()} />
+            <Box>
+                <Container className='nft-image'>
+                    <Image alt='' src={listing.nft.imgSrc()} />
+                </Container>
+                <Container pt={4} className='nft-details'>
+                    <div className='nft-name'>
+                        <p><b>{deets.name}</b> - <i>{deets.properties.artist}</i></p>
                     </div>
-
-                    <div className='container nft-details' >
-                        <div className='nft-name'>
-                            <p><b>{deets.name}</b> - <i>{deets.properties.artist}</i></p>
-                        </div>
-                        <div className='nft-id' >
-                            <p><a href={listing.nft.explorerSrc()}><b>{listing.asset_id}</b></a></p>
-                        </div>
+                    <div className='nft-id' >
+                        <p><a href={listing.nft.explorerSrc()}><b>{listing.asset_id}</b></a></p>
                     </div>
-                    <div className='container listing-description'>
-                        <p>{deets.description}</p>
-                    </div>
-
-                    <div className='container listing-actions' >
-                        <div className='listing-tags'>
-                            { tagsComponent }
+                </Container>
+                <Container pt={4} className='listing-description'>
+                    <Text>{deets.description}</Text>
+                </Container>
+                <Container pt={4} className='listing-actions' >
+                    <Container p={4} className='listing-tags'>
+                        { tagsComponent }
+                    </Container>
+                    <Container className='listing-buy'>
+                        {priceComponent}
+                        <div className='listing-buttons'>
+                            { buttons }
                         </div>
-                        <div className='container listing-buy'>
-                            {priceComponent}
-                            <div className='listing-buttons'>
-                                { buttons }
-                            </div>
-                        </div>
-                    </div>
-
-                </Card>
-            </div>
+                    </Container>
+                </Container>
+            </Box>
 
         )
     }
 
-    return ( <div className='container'></div> )
+    return ( <Container></Container> )
 }
 
 export default ListingViewer;

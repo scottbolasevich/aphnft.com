@@ -1,8 +1,7 @@
 'use strict'
 
 import * as React from 'react'
-
-import { Overlay, Button, Classes, Intent } from '@blueprintjs/core'
+import { Button, Modal, ModalBody, ModalOverlay, ModalContent, ModalFooter, ModalHeader, ModalCloseButton, HStack } from '@chakra-ui/react';
 
 export const DefaultPopupProps = {
 	isOpen: false,
@@ -27,15 +26,21 @@ export function RequestPopup(props: RequestPopupProps) {
     function handleProceed(){ props.handleOption(PopupPermission.Proceed) }
 
     return (
-            <Overlay isOpen={props.isOpen} className='popup-request' hasBackdrop={false} onClose={handleDecline}>
-                <div className={Classes.CARD}>
-                    <p>Please click proceed to allow signing popup</p>
-                    <br />
-                    <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-                        <Button intent={Intent.DANGER} onClick={handleDecline} style={{ margin: "" }} text='Nevermind' />
-                        <Button intent={Intent.SUCCESS} onClick={handleProceed} style={{ margin: "" }} text='Proceed' />
-                    </div>
-                </div>
-            </Overlay>
+            <Modal isOpen={props.isOpen} size={'lg'} onClose={handleDecline}>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Please click proceed to allow signing popup</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <HStack>
+                            <Button onClick={handleDecline} style={{ margin: "" }}>Nevermind</Button>
+                            <Button onClick={handleProceed} style={{ margin: "" }}>Proceed</Button>
+                        </HStack>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button onClick={handleDecline}>Close</Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
     )
 }

@@ -3,17 +3,13 @@
 
 import * as React from 'react'
 import {useParams} from 'react-router-dom'
-
 import { NFTCard } from './NFTCard'
 import { ListingCard } from './ListingCard'
-import {Card, Elevation, Tab, Tabs} from "@blueprintjs/core"
-
-
+import { Box, Container, Tab, Tabs, TabList, TabPanels, TabPanel, Text } from '@chakra-ui/react'
 import { Wallet } from 'algorand-session-wallet'
 import { Listing } from './lib/listing'
 import { NFT } from './lib/nft'
 import { getPortfolio } from './lib/algorand'
-
 
 type PortfolioProps = { 
     history: any
@@ -48,19 +44,30 @@ export default function Portfolio(props: PortfolioProps) {
 
 
     return (
-        <div className='container'>
-            <Card elevation={Elevation.THREE}>
-                <div className='container portfolio-name'>
-                    <h3>{port_acct}</h3>
-                </div>
-                <div className='container portfolio-content' >
-                    <Tabs id='portfolio' large={true} >
-                        <Tab id='nfts' title='Collection' panel={<NFTPanel nfts={nfts} /> } />
-                        <Tab id='listings' title='Listings' panel={<ListingPanel listings={listings} />} />
+        <Container>
+            <Box>
+                <Container p={4}>
+                    <Text fontSize='sm'>Wallet:</Text>
+                    <Text fontSize='xs'>{port_acct}</Text>
+                </Container>
+                <Container p={4}>
+                    <Tabs id='portfolio'>
+                        <TabList>
+                            <Tab id='nfts'>Collection</Tab>
+                            <Tab id='listings'>Listings</Tab>
+                        </TabList>
+                        <TabPanels>
+                            <TabPanel p={4}>
+                                <NFTPanel nfts={nfts}/>
+                            </TabPanel>
+                            <TabPanel p={4}>
+                                <ListingPanel listings={listings} />
+                            </TabPanel>
+                        </TabPanels>
                     </Tabs>
-                </div>
-            </Card>
-        </div>
+                </Container>
+            </Box>
+        </Container>
     )
 }
 
@@ -72,9 +79,9 @@ function NFTPanel(props: NFTPanelProps) {
     if (props.nfts.length==0)
         n = [<h3 key='none'>No NTFs yet, <a href='/mint'>Mint</a> one?</h3>]
     return (
-        <div className='container nft-panel'>
+        <Container p={4} className='nft-panel'>
             {n}
-        </div>
+        </Container>
     )
 }
 
@@ -91,8 +98,8 @@ function ListingPanel(props: ListingPanelProps) {
         l = [<h3 key='none'>No listings</h3>]
     
     return (
-        <div className='container listing-panel' >
+        <Container className='listing-panel' >
             { l }
-        </div>
+        </Container>
     )
 }

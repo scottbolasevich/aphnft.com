@@ -7,8 +7,8 @@ import {
   Route,
   Switch
 } from "react-router-dom";
-import { Alignment, AnchorButton, Navbar, Divider } from "@blueprintjs/core"
-
+import { Image, Center, Container, Heading, Text, VStack, Link, Flex, Box, Stack, Button, useColorMode, HStack, Grid, GridItem } from '@chakra-ui/react';
+import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 import Minter from './Minter'
 import Browser  from './Browser'
 import { AlgorandWalletConnector } from './AlgorandWalletConnector'
@@ -30,6 +30,7 @@ const timeout = async(ms: number) => new Promise(res => setTimeout(res, ms));
 export default function App(props: AppProps) {
 
   const [popupProps, setPopupProps] = React.useState(DefaultPopupProps)
+  const { colorMode, toggleColorMode } = useColorMode();
 
   const popupCallback = {
     async request(pr: PermissionResult): Promise<SignedTxn[]> {
@@ -55,9 +56,7 @@ export default function App(props: AppProps) {
     }
   }
 
-
   const sw = new SessionWallet(ps.algod.network, popupCallback)
-
   const [sessionWallet, setSessionWallet] =  React.useState(sw)
   const [accts, setAccounts] = React.useState(sw.accountList())
   const [connected, setConnected] = React.useState(sw.connected())
@@ -73,37 +72,49 @@ export default function App(props: AppProps) {
 
   let adminNav = <div/>
   if(connected  && (ps.application.admin_addr == "" || acct == ps.application.admin_addr)) {
-    adminNav = <AnchorButton className='bp3-minimal' icon='key' text='Admin' href="/admin" />
+    adminNav = <Link icon='key' href="/admin">Admin</Link>
   }
 
-  let port = <div/>
+  let mint = <div/>
+  let portfolio = <div/>
   if(connected){
-    port = <AnchorButton className='bp3-minimal' icon='folder-open' text='Portfolio' href="/portfolio" />
+    mint =<Link icon='clean' href="/mint">Mint</Link>
+    portfolio = <Link icon='folder-open' href="/portfolio">Portfolio</Link>
   }
 
   return (
       <div>
         <Router history={props.history} >
-          <Navbar >
-            <Navbar.Group align={Alignment.LEFT}>
-              <Navbar.Heading><a href='/'><img height={"30px"} src={require('./img/logogrey.png')}></img></a></Navbar.Heading>
-              <Navbar.Divider />
-              <AnchorButton className='bp3-minimal' icon='grid-view' text='Browse' href="/" />
-              <AnchorButton className='bp3-minimal' icon='clean' text='Mint' href="/mint" />
-              {port}
-            </Navbar.Group >
-
-            <Navbar.Group align={Alignment.RIGHT}>
-              {adminNav}
-              <AlgorandWalletConnector 
-                darkMode={true}
-                sessionWallet={sessionWallet}
-                accts={accts}
-                connected={connected} 
-                updateWallet={updateWallet}
-                />
-            </Navbar.Group>
-          </Navbar>
+          <Container maxW="100%">
+                <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
+                    <HStack spacing={8}>
+                        <a href='/'><Image alt="aphnft.com" w="150px" h="55px" src={require('./img/logo.png')} /></a>
+                        <Text>
+                            APH NFT
+                        </Text>
+                        <Link icon='grid-view' href="/">Browse</Link>
+                        {mint}
+                        {portfolio}
+                    </HStack>
+                    <Flex alignItems={'center'}>
+                        <Stack direction={'row'} spacing={7}>
+                            <Button onClick={toggleColorMode}>
+                                {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+                            </Button>
+                            <HStack>
+                                {adminNav}
+                                <AlgorandWalletConnector 
+                                  darkMode={true}
+                                  sessionWallet={sessionWallet}
+                                  accts={accts}
+                                  connected={connected} 
+                                  updateWallet={updateWallet}
+                                  />
+                            </HStack>
+                        </Stack>
+                    </Flex>
+                </Flex>
+            </Container>
           <Switch>
             <Route path="/portfolio" >
               <Portfolio history={props.history} wallet={wallet} acct={acct} /> 

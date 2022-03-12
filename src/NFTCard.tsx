@@ -3,9 +3,8 @@
 'use strict'
 
 import * as React from 'react'
-import {useParams} from 'react-router-dom'
-import {Card} from '@blueprintjs/core'
-import {NFT} from './lib/nft'
+import { Box, Container, Text, Link, Image } from '@chakra-ui/react'
+import { NFT } from './lib/nft'
 
 type NFTCardState = {};
 type NFTCardProps = {
@@ -14,23 +13,23 @@ type NFTCardProps = {
 
 export function NFTCard(props: NFTCardProps) {
     return (
-        <Card className='nft-card'  >
-            <div className='container'>
-                <a href={'/nft/'+props.nft.asset_id}>
-                    <img src={props.nft.imgSrc()}></img>
-                </a>
-            </div>
-            <div className='container'>
-                <p>
-                    <a href={'/nft/'+props.nft.asset_id}>
+        <Box margin={10} borderWidth='1px' borderRadius='lg'>
+            <Container p={4}>
+                <Link href={'/nft/'+props.nft.asset_id}>
+                    <Image src={props.nft.imgSrc()} />
+                </Link>
+            </Container>
+            <Container p={4}>
+                <Text>
+                    <Link href={'/nft/'+props.nft.asset_id}>
                         <b>{props.nft.metadata.name}</b> - <i>{props.nft.metadata.properties.artist}</i>
-                    </a>
-                </p>
-            </div>
-            <div className='container'>
-                <p>{props.nft.metadata.description}</p>
-            </div>
-        </Card> 
+                    </Link>
+                </Text>
+            </Container>
+            <Container p={4}>
+                <Text>{props.nft.metadata.description}</Text>
+            </Container>
+        </Box> 
     )
 
 }

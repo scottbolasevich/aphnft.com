@@ -4,11 +4,12 @@
 import * as React from 'react'
 import { storeNFT  } from './lib/ipfs'
 import IPFS from 'ipfs-core'
-import { Button, Elevation, FileInput, Card } from "@blueprintjs/core"
+import { FileInput } from "@blueprintjs/core"
+import { Box, Button, Container, Center, FormControl, Input, Text, Textarea, Stack, Image } from '@chakra-ui/react'
 import { NFT, NFTMetadata, emptyMetadata } from './lib/nft'
 import { platform_settings as ps } from './lib/platform-conf'
 import { showErrorToaster, showInfo } from './Toaster'
-import {Wallet} from 'algorand-session-wallet'
+import { Wallet } from 'algorand-session-wallet'
 
 type MinterProps = {
     history: any 
@@ -103,55 +104,44 @@ export default function Minter(props: MinterProps){
     }
 
     return (
-        <div className='container'>
-            <Card elevation={Elevation.TWO} >
-                <Uploader
-                    imgSrc={imgSrc}
-                    setFile={setFile}
-                    {...meta} />
-
-                <div className='container' >
-                    <input
-                        name='name'
-                        placeholder='Title...'
-                        className='details-basic details-title bp3-input bp3-large'
-                        onChange={handleChangeMeta}
-                        type='text'
-                        id='name'
-                        value={meta.name} />
-                    <input
-                        name='artist'
-                        placeholder='Artist...'
-                        className='details-basic details-artist bp3-input bp3-large'
-                        onChange={handleChangeMeta}
-                        type='text'
-                        id='artist'
-                        value={meta.properties.artist} />
-                </div>
-
-                <div className='container'>
-                    <textarea
-                        placeholder='Description...'
-                        className='details-description bp3-input bp3-large'
-                        onChange={handleChangeMeta}
-                        name='description'
-                        id='description'
-                        value={meta.description} />
-                </div>
-
-                <div className='container-mint'>
-                    <Button
-                        loading={loading}
-                        onClick={mintNFT}
-                        rightIcon='clean'
-                        large={true}
-                        minimal={true}
-                        outlined={true}
-                        intent='success'
-                        text='Mint' />
-                </div>
-            </Card>
-        </div>
+        <Container>
+            <Center>
+                <Text fontSize='xl'>Upload your Image to Mint Your NFT</Text>
+            </Center>
+            <Box w='50%' p={4}>
+                <FormControl as='fieldset'>
+                        <Stack spacing={4}>
+                            <Uploader
+                            imgSrc={imgSrc}
+                            setFile={setFile}
+                            {...meta} />
+                            <Input
+                                name='name'
+                                placeholder='Title...'
+                                onChange={handleChangeMeta}
+                                id='name'
+                                value={meta.name} />
+                            <Input
+                                name='artist'
+                                placeholder='Artist...'
+                                onChange={handleChangeMeta}
+                                id='artist'
+                                value={meta.properties.artist} />
+                            <Textarea 
+                                placeholder='Description...'
+                                onChange={handleChangeMeta}
+                                name='description'
+                                id='description'
+                                value={meta.description} />
+                        </Stack>
+                        <Box pt={4}>
+                            <Button
+                                colorScheme='blue'
+                                onClick={mintNFT}>Mint</Button>
+                        </Box>
+                </FormControl>
+            </Box>
+        </Container>
     )
 
 }
@@ -173,19 +163,15 @@ function Uploader(props: UploaderProps) {
     }
 
     if (props.imgSrc === undefined || props.imgSrc == "" ) return (
-        <div className='container'>
-            <div className='content content-piece' >
-                <FileInput large={true} disabled={false} text="Choose file..." onInputChange={captureFile} />
-            </div>
-        </div>
+        <Container>
+           <FileInput large={true} disabled={false} text="..." onInputChange={captureFile} />
+        </Container>
     )
 
 
     return (
-        <div className='container' >
-            <div className='content content-piece'>
-                <img id="gateway-link" src={props.imgSrc} />
-            </div>
-        </div>
+        <Container>
+           <Image id="gateway-link" src={props.imgSrc} />
+        </Container>
     )
 }

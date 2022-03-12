@@ -4,7 +4,8 @@
 import * as React from 'react'
 import {useParams, useHistory} from 'react-router-dom'
 import { tryGetNFT, isOptedIntoApp, getListingAddr } from './lib/algorand'
-import {Tag, Card, FormGroup, Label, Button, MultistepDialog, DialogStep, Classes, NumericInput, Elevation} from '@blueprintjs/core'
+import { Button, Box, Container, Flex, FormLabel, FormControl, HStack, Image, NumberInput, NumberInputField, Tag, Text} from '@chakra-ui/react';
+import { Step, Steps, useSteps } from 'chakra-ui-steps';
 import Listing from './lib/listing'
 import {Wallet} from 'algorand-session-wallet'
 import {NFT} from './lib/nft'
@@ -24,7 +25,6 @@ export default function NFTViewer(props: NFTViewerProps) {
     let history = useHistory();
 
     const [nft, setNFT]                = React.useState(NFT.emptyNFT())
-
     const [waiting_for_tx, setWaiting]        = React.useState(false)
     const [price, setPrice]                   = React.useState(0)
     const [listingVisible, setListingVisible] = React.useState(false)
@@ -103,18 +103,23 @@ export default function NFTViewer(props: NFTViewerProps) {
         try{
             await handleOptIn()
 
-
             showInfo("Creating listing transaction")
-            const lst = new Listing(price, parseInt(id), props.acct)
+            console.log("price",price)
+            //console.log(" parseInt(id)", parseInt(id))
+            //console.log("props.acct",props.acct)
+            let priceInt:number=Number(price);
+            console.log("priceInt",priceInt)
+            const lst = new Listing(priceInt, parseInt(id), props.acct)
 
-               // Trigger popup to get event for signing 
+            // Trigger popup to get event for signing 
             await lst.doCreate(props.wallet)
 
             if(tags.length > 0 ){
                 showInfo("Adding tags")
                 await lst.doTags(props.wallet, tags)
             }
-
+            
+            console.log("lst.contract_addr",lst.contract_addr)    
             history.push("/listing/"+lst.contract_addr)
 
         }catch(error){ 
@@ -128,75 +133,110 @@ export default function NFTViewer(props: NFTViewerProps) {
 
     if(listingAddr == "" && props.wallet !== undefined && nft !== undefined && nft.manager === props.wallet.getDefaultAccount()){
         editButtons = (
-            <div className='container-right'>
-                <div className='content'>
-                    <Button loading={waiting_for_tx} onClick={handleCreateListing} intent='success' icon='tag' >Create Listing</Button>
-                    <Button loading={waiting_for_tx} onClick={deleteToken} intent='danger' icon='cross' >Delete token</Button>
-                </div>
-            </div>
+            <Container>
+                <HStack pt={22}>
+                    <Button colorScheme='blue' onClick={handleCreateListing}>Create Listing</Button>
+                    <Button colorScheme='red' p={2} onClick={deleteToken}>Delete token</Button>
+                </HStack>
+            </Container>
         )
     }
 
     const listing_link = listingAddr !== ""?(
         <p>This NFT is listed <a href={ps.domain+"listing/"+listingAddr}><b>here</b></a></p>
     ):<p></p>
-
+    
+    const content = (
+        <Flex py={4}>
+        </Flex>
+    );
+    const steps = [
+        { label: 'Price', content },
+        { label: 'Tags', content },
+    ];
+    const { nextStep, prevStep, reset, activeStep } = useSteps({
+        initialStep: 0,
+    });
+    //const onSubmit = async () => {
+    const onSubmit = (data) => {
+      handleSubmitListing();
+      //console.log("onSubmit");
+      //console.log(data);
+    };
     return (
-        <div className='container nft-display' >
-            <Card  elevation={Elevation.TWO} className='nft-card' >
-                <div className='content nft-image'>
-                    <img src={nft.imgSrc()} />
-                </div>
-
-                <div className='container nft-details' >
-                    <div className='nft-name'>
-                        <p><b>{nft.metadata.name}</b> - <i>{nft.metadata.properties.artist}</i></p>
-                    </div>
-                    <div className='nft-token-id' >
-                        <p><a href={nft.explorerSrc()}><b>{nft.asset_id}</b></a></p>
-                    </div>
-                </div>
-
-                <div className='container nft-description'>
-                    <p> { nft.metadata.description }</p>
-                </div>
-
-                { editButtons }
-
-                <div className='container'>
-                    {listing_link}
-                </div>
-            </Card>
-
-
-            <MultistepDialog isOpen={listingVisible} onClose={handleCancelListing} finalButtonProps={{loading: waiting_for_tx, onClick:handleSubmitListing}} >
-                <DialogStep 
-                    id="price" 
-                    title="price" 
-                    panel={<ListingDetails tokenId={nft.asset_id} price={price} onPriceChange={handlePriceChange} />}>
-                </DialogStep>
-                <DialogStep 
-                    id="tags" 
-                    title="tags" 
-                    panel={
-                        <div className={Classes.DIALOG_BODY}>
-                            <Tagger 
-                                renderProps={{"fill":true}} 
-                                tags={tags} 
-                                tagOpts={ps.application.tags} 
-                                setTags={setTags}
-                                maxTags={MAX_LISTING_TAGS}
-                                />
-                        </div>
-                    } />
-                <DialogStep 
-                    id="confirm" 
-                    title="confirm" 
-                    panel={<ConfirmListingDetails tokenId={nft.asset_id} price={price} tags={tags} />} 
-                    >
-                </DialogStep>
-            </MultistepDialog>
-        </div>
+        <Container>
+            <Box className='nft-card'>
+                <Container className='nft-image'>
+                    <Image alt='' src={nft.imgSrc()} />
+                </Container>
+                <Container p={0} pt={4} className='nft-details'>
+                    <Container className='nft-name'>
+                        <Text><b>{nft.metadata.name}</b> - <i>{nft.metadata.properties.artist}</i></Text>
+                    </Container>
+                    <Container pt={4} className='nft-token-id'>
+                        <Text>ASA: <a href={nft.explorerSrc()}><b>{nft.asset_id}</b></a></Text>
+                    </Container>
+                </Container>
+                <Container pt={4} className='nft-description'>
+                    <Text>{ nft.metadata.description }</Text>
+                </Container>
+                    { editButtons }
+                <Container pt={4}>
+                    { listing_link }
+                </Container>
+            </Box>
+            {listingVisible == true ? (
+            <Container p={8}>
+                <Flex flexDir="column" width="100%">
+                    <Steps activeStep={activeStep}>
+                        {steps.map(({ label }) => (
+                        <Step label={label} key={label}>
+                            {label === "Price" ? (
+                                <ListingDetails tokenId={nft.asset_id} price={price} onPriceChange={handlePriceChange} />
+                            ) : (
+                                <Container>
+                                    <Tagger 
+                                        renderProps={{"fill":true}} 
+                                        tags={tags} 
+                                        tagOpts={ps.application.tags} 
+                                        setTags={setTags}
+                                        maxTags={MAX_LISTING_TAGS}
+                                        />
+                                </Container>
+                            )}
+                        </Step>
+                        ))}
+                    </Steps>
+                    {activeStep === steps.length ? (
+                        <Flex p={4}>
+                            <ConfirmListingDetails tokenId={nft.asset_id} price={price} tags={tags} />
+                            <Button mx="auto" size="sm" onClick={onSubmit}>
+                                Submit
+                            </Button>
+                            <Button mx="auto" size="sm" onClick={reset}>
+                                Reset
+                            </Button>
+                        </Flex>
+                    ) : (
+                        <Flex width="100%" justify="flex-end">
+                        <Button
+                            isDisabled={activeStep === 0}
+                            mr={4}
+                            onClick={prevStep}
+                            size="sm"
+                            variant="ghost"
+                        >
+                            Prev
+                        </Button>
+                        <Button size="sm" onClick={nextStep}>
+                            {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                        </Button>
+                        </Flex>
+                    )}
+                </Flex>
+            </Container>
+            ) : (<Container></Container>)}
+        </Container>
     )
 }
 
@@ -207,26 +247,24 @@ function ListingDetails(props){
     }
 
     return (
-        <div className={Classes.DIALOG_BODY}>
-            <FormGroup>
-                <Label htmlFor="input-price">Price in μAlgos</Label>
-                <NumericInput buttonPosition="none" 
-                    min={0} large={true} 
-                    id="input-price" value={props.price} 
-                    onValueChange={handlePriceChange} ></NumericInput>
-            </FormGroup>
-        </div>
+        <Container>
+            <FormControl>
+                <FormLabel htmlFor="input-price">Price in Algos</FormLabel>
+                <NumberInput size='s' id='input-price' inputMode={"numeric"} placeholder={"Maximum Price"} defaultValue={props.price} maxW={150} onChange={handlePriceChange}>
+                    <NumberInputField />
+                </NumberInput>
+            </FormControl>
+        </Container>
     )
 }
 
 function ConfirmListingDetails(props){
     return (
-        <div className={Classes.DIALOG_BODY}>
+        <Container>
             <h3>Listing:</h3>
-
             <p><b>Token:</b> {props.tokenId} </p>
             <p><b>Price:</b> {props.price} μAlgos</p> 
             <p><b>Tags:</b> {props.tags.map(t=>{return <Tag key={t.id} round={true} intent='primary'>{t.name}</Tag>})}</p>
-        </div>
+        </Container>
     )
 }

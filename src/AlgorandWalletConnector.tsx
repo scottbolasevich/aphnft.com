@@ -2,16 +2,13 @@
 'use strict'
 
 import * as React from 'react'
-
 import { SessionWallet, allowedWallets } from 'algorand-session-wallet'
-
-import { Dialog, Button, Classes, HTMLSelect, Intent, Icon } from '@blueprintjs/core'
-import { IconName } from '@blueprintjs/icons'
-
+import { HStack, VStack, Modal, ModalBody, ModalOverlay, ModalContent, ModalHeader, ModalFooter, Box, Button, Select } from '@chakra-ui/react'
+import { NotAllowedIcon } from '@chakra-ui/icons'
 import { useEffect } from 'react'
 import { showErrorToaster } from './Toaster'
 import {platform_settings as ps } from './lib/platform-conf'
-import { RequestPopup } from './RequestPopup'
+import { useDisclosure } from "@chakra-ui/react"
 
 
 type AlgorandWalletConnectorProps = {
@@ -25,6 +22,8 @@ type AlgorandWalletConnectorProps = {
 export function AlgorandWalletConnector(props:AlgorandWalletConnectorProps)  {
 
     const [selectorOpen, setSelectorOpen] = React.useState(false)
+    const cancelRef = React.useRef()
+    const { isOpen, onOpen, onClose } = useDisclosure()
 
     useEffect(()=>{ connectWallet() },[props.sessionWallet])
 
@@ -70,62 +69,51 @@ export function AlgorandWalletConnector(props:AlgorandWalletConnectorProps)  {
     const walletOptions = []
     for(const [k,v] of Object.entries(allowedWallets).splice(0, 2)){
         walletOptions.push((
-        <li key={k}>
-            <Button id={k}
-                large={true} 
-                fill={true} 
-                minimal={true} 
-                outlined={true} 
-                onClick={handleSelectedWallet}
-                > 
-                <div className='wallet-option'>
-                    <img className='wallet-branding' src={  v.img(props.darkMode)} />
-                    <h5>{v.displayName()}</h5>
-                </div>
-                </Button>
-        </li>
+        <div key={k}>
+            <Button id={k} leftIcon={<img width='50px' height='50px' src={v.img(props.darkMode)} />} size='lg' variant='outline' onClick={handleSelectedWallet}> 
+                {v.displayName()}
+            </Button>
+        </div>
         ))
     }
 
     if (!props.connected) return (
         <div>
-            <Button
-                minimal={true}
-                rightIcon='selection'
-                intent='warning'
-                outlined={true}
-                onClick={handleDisplayWalletSelection}>Connect Wallet</Button>
-
-            <Dialog isOpen={selectorOpen} title='Select Wallet' onClose={handleSelectedWallet} >
-                <div className={Classes.DIALOG_BODY}>
-                    <ul className='wallet-option-list'>
-                        {walletOptions}
-                    </ul>
-                </div>
-            </Dialog>
+            <Button variant='outline' onClick={handleDisplayWalletSelection}>Connect Wallet</Button>
+            <Modal isOpen={selectorOpen} onClose={onClose} >
+                <ModalOverlay>
+                    <ModalContent>
+                        <ModalHeader fontSize='lg' fontWeight='bold'>
+                        Select Wallet
+                        </ModalHeader>
+                        <ModalBody>
+                            <VStack>
+                                {walletOptions}
+                            </VStack>
+                        </ModalBody>
+                        <ModalFooter>
+                        <Button ref={cancelRef} onClick={handleSelectedWallet}>
+                            Cancel
+                        </Button>
+                        </ModalFooter>
+                    </ModalContent>
+                </ModalOverlay>
+            </Modal>
         </div>
     )
-
 
     const addr_list = props.accts.map((addr, idx) => {
         return (<option value={idx} key={idx}> {addr.substr(0, 8)}...  </option>)
     })
 
-    const iconprops = { 
-        icon: 'symbol-circle' as IconName, 
-        intent: 'success'  as Intent
-    }
-
     return (
-        <div>
-            <HTMLSelect 
+        <HStack>
+            <Select 
                 onChange={handleChangeAccount} 
-                minimal={true} 
-                iconProps={iconprops} 
                 defaultValue={props.sessionWallet.accountIndex()} >
                 {addr_list}
-            </HTMLSelect>
-            <Button icon='log-out' minimal={true} onClick={disconnectWallet} ></Button>
-        </div>
+            </Select>
+            <Button onClick={disconnectWallet}><NotAllowedIcon/></Button>
+        </HStack>
     )
 }

@@ -8,7 +8,8 @@ import { Wallet } from 'algorand-session-wallet'
 import { platform_settings as ps} from './lib/platform-conf'
 import {TagToken} from './lib/tags'
 import { Application } from './lib/application';
-import { Card, Tag, Button, Tabs, Tab, InputGroup, TagInput, Classes, Elevation } from '@blueprintjs/core'
+import { Tag, Button, InputGroup, TagInput, Classes } from '@blueprintjs/core'
+import { Box, Container, Tab, Tabs, TabList, TabPanels, TabPanel, Text } from '@chakra-ui/react'
 import SyntaxHighlighter from 'react-syntax-highlighter'
 import { docco } from  'react-syntax-highlighter/dist/esm/styles/hljs'
 import { getTags } from './lib/algorand'
@@ -169,14 +170,14 @@ export default function Admin(props: AdminProps) {
 
     return (
         <div>
-            <div className='container config-container'>
-                <Card elevation={Elevation.THREE} >
+            <div className='container'>
+                <Box>
                     <Tabs id='configuration' vertical={true}>
-                        <Tab title='App' id='app' panel={ appComponent } />
-                        <Tab title='Algod' id='algod' panel={<Algod setProp={setAlgodValue} {...algod} />} />
-                        <Tab title='Indexer' id='index' panel={ <Indexer setProp={setIndexerValue} {...indexer} /> } />
-                        <Tab title='Ipfs' id='ipfs' panel={ <IPFSConfig setProp={setIpfsValue} {...ipfs} /> } />
-                        <Tab title='Tags' id='tags' panel={ <TagCreator loading={loading} searchForTags={searchForTags} handleAdd={handleTagAdd} handleRemove={handleTagRemove} tags={tags} />} />
+                        <Tab id='app' panel={ appComponent } />App
+                        <Tab id='algod' panel={<Algod setProp={setAlgodValue} {...algod} />}>Algod</Tab>
+                        <Tab id='index' panel={ <Indexer setProp={setIndexerValue} {...indexer} /> }>Indexer</Tab>
+                        <Tab id='ipfs' panel={ <IPFSConfig setProp={setIpfsValue} {...ipfs} /> }>Ipfs</Tab>
+                        <Tab id='tags' panel={ <TagCreator loading={loading} searchForTags={searchForTags} handleAdd={handleTagAdd} handleRemove={handleTagRemove} tags={tags} />}>Tags</Tab>
                     </Tabs>
                     <div className='container config-text-container'>
                         <SyntaxHighlighter language='json' style={docco} wrapLongLines={true}>
@@ -184,7 +185,7 @@ export default function Admin(props: AdminProps) {
                         </SyntaxHighlighter>
                         <Button text='Download' minimal={true} outlined={true}  onClick={updateConf} />
                     </div>
-                </Card>
+                </Box>
             </div>
             <Prompt when={true} message="Changes made to config, have you saved them?" />
         </div>

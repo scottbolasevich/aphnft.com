@@ -1,8 +1,8 @@
 'use strict'
 
 import * as React from 'react'
-import { AnchorButton, Card, Elevation } from '@blueprintjs/core'
-import { Listing} from './lib/listing'
+import { Button, Container } from '@chakra-ui/react';
+import { Listing } from './lib/listing'
 
 
 type ListingCardProps = { key: string, listing: Listing; };
@@ -13,34 +13,28 @@ export function ListingCard(props: ListingCardProps) {
     const md = l.nft.metadata
 
     return (
-        <Card className='listing-card' elevation={Elevation.TWO} >
-            <div className='container'>
+        <Container>
+            <Container>
                 <a href={'/listing/'+l.contract_addr}>
                     <img src={l.nft.imgSrc()}></img>
                 </a>
-            </div>
-            <div className='container'>
-                <p>
-                    <a href={'/listing/'+l.contract_addr}> 
-                        <b>{md.name}</b> - <i>{md.properties.artist}</i> ({l.price} μAlgos)
-                    </a>
-
-                </p>
-            </div>
-            <div className='container listing-card-tags'>
+            </Container>
+            <Container>
+                <a href={'/listing/'+l.contract_addr}> 
+                    <b>{md.name}</b> - <i>{md.properties.artist}</i> ({l.price} μAlgos)
+                </a>
+            </Container>
+            <Container>
                 {
                     l.tags.map((t)=>{
-                        return <AnchorButton 
+                        return <Button 
                             key={t.id} 
-                            large={true}
-                            minimal={true}
-                            outlined={true}
+                            variant='outlined'
                             href={'/tag/'+ t.name} 
-                            text={t.name} 
-                        />
+                        >{t.name}</Button>
                     })
                 } 
-            </div>
-        </Card> 
+            </Container>
+        </Container> 
     )
 }
