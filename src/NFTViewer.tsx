@@ -12,7 +12,7 @@ import {NFT} from './lib/nft'
 import  {Tagger, MAX_LISTING_TAGS } from './Tagger'
 import {Application} from './lib/application'
 import {platform_settings as ps} from './lib/platform-conf'
-import { ErrorToaster, showErrorToaster, showInfo } from './Toaster'
+import { showErrorToaster, showInfo } from './Toaster'
 
 type NFTViewerProps = {
     history: any
@@ -104,11 +104,11 @@ export default function NFTViewer(props: NFTViewerProps) {
             await handleOptIn()
 
             showInfo("Creating listing transaction")
-            console.log("price",price)
+            //console.log("price",price)
             //console.log(" parseInt(id)", parseInt(id))
             //console.log("props.acct",props.acct)
             let priceInt:number=Number(price);
-            console.log("priceInt",priceInt)
+            //console.log("priceInt",priceInt)
             const lst = new Listing(priceInt, parseInt(id), props.acct)
 
             // Trigger popup to get event for signing 
@@ -250,7 +250,7 @@ function ListingDetails(props){
         <Container>
             <FormControl>
                 <FormLabel htmlFor="input-price">Price in Algos</FormLabel>
-                <NumberInput size='s' id='input-price' inputMode={"numeric"} placeholder={"Maximum Price"} defaultValue={props.price} maxW={150} onChange={handlePriceChange}>
+                <NumberInput size='m' id='input-price' inputMode={"numeric"}  min={1} max={10000} defaultValue={props.price} maxW={100} onChange={handlePriceChange}>
                     <NumberInputField />
                 </NumberInput>
             </FormControl>
@@ -264,7 +264,7 @@ function ConfirmListingDetails(props){
             <h3>Listing:</h3>
             <p><b>Token:</b> {props.tokenId} </p>
             <p><b>Price:</b> {props.price} μAlgos</p> 
-            <p><b>Tags:</b> {props.tags.map(t=>{return <Tag key={t.id} round={true} intent='primary'>{t.name}</Tag>})}</p>
+            <p><b>Tags:</b> {props.tags.map(t=>{return <Tag key={t.id} intent='primary'>{t.name}</Tag>})}</p>
         </Container>
     )
 }

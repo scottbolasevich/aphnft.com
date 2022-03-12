@@ -13,7 +13,7 @@ type NFTCardProps = {
 
 export function NFTCard(props: NFTCardProps) {
     return (
-        <Box margin={10} borderWidth='1px' borderRadius='lg'>
+        <Box margin={5} borderWidth='1px' borderRadius='lg'>
             <Container p={4}>
                 <Link href={'/nft/'+props.nft.asset_id}>
                     <Image src={props.nft.imgSrc()} />

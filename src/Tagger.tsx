@@ -69,6 +69,7 @@ export function Tagger(props: TaggerProps) {
             tagInputProps={{ onRemove:handleUntag}}
             itemsEqual="id"
             items={props.tagOpts} 
+            style={{ backgroundColor:"#90cdf4" }}
         />
     )
 } 

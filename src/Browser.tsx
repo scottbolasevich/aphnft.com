@@ -2,11 +2,11 @@
 'use strict'
 
 import * as React from 'react'
-import {useHistory, useParams, useLocation} from 'react-router-dom'
+import { useHistory, useParams, useLocation } from 'react-router-dom'
 import { getListings } from './lib/algorand'
-import {ListingCard} from './ListingCard'
-import {Wallet} from 'algorand-session-wallet'
-import { Button, Container, FormLabel, NumberInput, NumberInputField, Stack } from '@chakra-ui/react';
+import { ListingCard } from './ListingCard'
+import { Wallet } from 'algorand-session-wallet'
+import { Button, Center, Container, FormLabel, NumberInput, NumberInputField, Stack, HStack } from '@chakra-ui/react';
 
 type BrowserProps = {
     history: any
@@ -69,20 +69,20 @@ export default function Browser(props: BrowserProps) {
 
     // Only allow filtering by price if no tag is chosen
     const priceFilter = tag===undefined?(
-        <Container>
-            <FormLabel>
-                Minimum Price
-            </FormLabel>
-            <NumberInput size='s' defaultValue={minPrice} maxW={150} min={0} max={999999999} onChange={updateMinPrice}>
-                <NumberInputField placeholder={"Minimum Price"} />
-            </NumberInput>
-            <FormLabel>
-                Maximum price
-            </FormLabel>
-            <NumberInput size='s' defaultValue={maxPrice} maxW={150} min={0} max={999999999} onChange={updateMaxPrice}>
-                <NumberInputField placeholder={"Maximum Price"} />
-            </NumberInput>
-            <Button colorScheme='blue' onClick={filterListings}>Filter</Button>
+        <Container p={2} maxW='container.xl'>
+            <Center>
+                <HStack>
+                    <FormLabel>Minimum Price</FormLabel>
+                    <NumberInput size='s' defaultValue={minPrice} maxW={150} min={0} max={999999999} onChange={updateMinPrice}>
+                        <NumberInputField placeholder={"Minimum Price"} />
+                    </NumberInput>
+                    <FormLabel>Maximum price</FormLabel>
+                    <NumberInput size='s' defaultValue={maxPrice} maxW={150} min={0} max={999999999} onChange={updateMaxPrice}>
+                        <NumberInputField placeholder={"Maximum Price"} />
+                    </NumberInput>
+                    <Button colorScheme='blue' onClick={filterListings}>Filter</Button>
+                </HStack>
+            </Center>
         </Container>
     ):<Container></Container>
 

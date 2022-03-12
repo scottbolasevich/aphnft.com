@@ -6,7 +6,7 @@ import { ChakraProvider, extendTheme } from '@chakra-ui/react'
 import { StepsStyleConfig as Steps } from 'chakra-ui-steps';
 import {createBrowserHistory} from "history"
 import App  from './App'
-//import "./styles/index.scss"
+require('./index.css');
 
 const history = createBrowserHistory();
 const theme = extendTheme({

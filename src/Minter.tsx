@@ -104,11 +104,11 @@ export default function Minter(props: MinterProps){
     }
 
     return (
-        <Container>
+        <Container p={4}>
             <Center>
                 <Text fontSize='xl'>Upload your Image to Mint Your NFT</Text>
             </Center>
-            <Box w='50%' p={4}>
+            <Box p={4}>
                 <FormControl as='fieldset'>
                         <Stack spacing={4}>
                             <Uploader

@@ -26,18 +26,12 @@ import { showErrorToaster } from '../Toaster';
 export class Listing {
     asset_id: number
     price: number
-
     creator_addr: string
     contract_addr: string
-
     tags: TagToken[]
-
     nft: NFT
-
     source: string
-
     lsig: LogicSig
-
 
     constructor(price: number, asset_id: number, creator_addr: string, contract_addr?: string) {
         this.price = price

@@ -7,10 +7,29 @@ import {
   Route,
   Switch
 } from "react-router-dom";
-import { Image, Center, Container, Heading, Text, VStack, Link, Flex, Box, Stack, Button, useColorMode, HStack, Grid, GridItem } from '@chakra-ui/react';
-import { MoonIcon, SunIcon } from '@chakra-ui/icons';
+import { ReactNode } from 'react';
+import {
+  Box,
+  Flex,
+  Avatar,
+  HStack,
+  Link,
+  IconButton,
+  Button,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuDivider,
+  useDisclosure,
+  useColorModeValue,
+  useColorMode,
+  Stack,
+} from '@chakra-ui/react';
+import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon, AddIcon, InfoIcon } from '@chakra-ui/icons';
 import Minter from './Minter'
 import Browser  from './Browser'
+import Home  from './Home'
 import { AlgorandWalletConnector } from './AlgorandWalletConnector'
 import NFTViewer from './NFTViewer'
 import Portfolio from './Portfolio'
@@ -26,6 +45,22 @@ type AppProps = {
 };
 
 const timeout = async(ms: number) => new Promise(res => setTimeout(res, ms));
+
+const Links = ['explore'];
+
+const NavLink = ({ children }: { children: string }) => (
+  <Link
+    px={2}
+    py={1}
+    rounded={'md'}
+    _hover={{
+      textDecoration: 'none',
+      bg: useColorModeValue('gray.200', 'gray.700'),
+    }}
+    href={'/'+children}>
+    {children}
+  </Link>
+);
 
 export default function App(props: AppProps) {
 
@@ -78,43 +113,77 @@ export default function App(props: AppProps) {
   let mint = <div/>
   let portfolio = <div/>
   if(connected){
-    mint =<Link icon='clean' href="/mint">Mint</Link>
-    portfolio = <Link icon='folder-open' href="/portfolio">Portfolio</Link>
+    mint =<NavLink>mint</NavLink>
+    portfolio = <NavLink>portfolio</NavLink>
   }
 
+  const { isOpen, onOpen, onClose } = useDisclosure();
   return (
       <div>
         <Router history={props.history} >
-          <Container maxW="100%">
-                <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
-                    <HStack spacing={8}>
-                        <a href='/'><Image alt="aphnft.com" w="150px" h="55px" src={require('./img/logo.png')} /></a>
-                        <Text>
-                            APH NFT
-                        </Text>
-                        <Link icon='grid-view' href="/">Browse</Link>
-                        {mint}
-                        {portfolio}
-                    </HStack>
-                    <Flex alignItems={'center'}>
-                        <Stack direction={'row'} spacing={7}>
-                            <Button onClick={toggleColorMode}>
-                                {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-                            </Button>
-                            <HStack>
-                                {adminNav}
-                                <AlgorandWalletConnector 
-                                  darkMode={true}
-                                  sessionWallet={sessionWallet}
-                                  accts={accts}
-                                  connected={connected} 
-                                  updateWallet={updateWallet}
-                                  />
-                            </HStack>
-                        </Stack>
-                    </Flex>
-                </Flex>
-            </Container>
+        <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
+          <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
+            <IconButton
+              size={'md'}
+              icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
+              aria-label={'Open Menu'}
+              display={{ md: 'none' }}
+              onClick={isOpen ? onClose : onOpen}
+            />
+            <HStack spacing={8} alignItems={'center'}>
+              <Link href="/"><img alt="aphnft.com" width="100rem" src={require('./img/logo.svg')} /></Link>
+              <HStack
+                as={'nav'}
+                spacing={4}
+                display={{ base: 'none', md: 'flex' }}>
+                {Links.map((link) => (
+                  <NavLink key={link}>{link}</NavLink>
+                ))}
+                {mint}
+                {portfolio}
+              </HStack>
+            </HStack>
+            <Flex alignItems={'center'}>
+              <Stack direction={'row'} spacing={7}>
+                <Button onClick={toggleColorMode}>
+                    {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+                </Button>
+                <Menu>
+                  <MenuButton
+                    as={Button}
+                    rounded={'full'}
+                    variant={'link'}
+                    cursor={'pointer'}
+                    minW={0}>
+                    <InfoIcon boxSize={6}/>
+                  </MenuButton>
+                  <MenuList>
+                    <AlgorandWalletConnector 
+                          darkMode={true}
+                          sessionWallet={sessionWallet}
+                          accts={accts}
+                          connected={connected} 
+                          updateWallet={updateWallet}
+                          />
+                    <MenuDivider />
+                    <MenuItem>My NFTs</MenuItem>
+                    <MenuItem>My Listings</MenuItem>
+                  </MenuList>
+                </Menu>
+                </Stack>
+              </Flex>
+          </Flex>
+
+          {isOpen ? (
+            <Box pb={4} display={{ md: 'none' }}>
+              <Stack as={'nav'} spacing={4}>
+                {Links.map((link) => (
+                  <NavLink key={link}>{link}</NavLink>
+                ))}
+              </Stack>
+            </Box>
+          ) : null}
+        </Box>
           <Switch>
             <Route path="/portfolio" >
               <Portfolio history={props.history} wallet={wallet} acct={acct} /> 
@@ -128,6 +197,9 @@ export default function App(props: AppProps) {
             <Route path="/listing/:addr" children={<ListingViewer  history={props.history} wallet={wallet} acct={acct} />} />
 
             <Route exact path="/" >
+              <Home history={props.history} wallet={wallet} acct={acct} />
+            </Route>
+            <Route exact path="/explore" >
               <Browser history={props.history} wallet={wallet} acct={acct} />
             </Route>
             <Route path="/tag/:tag"  >

@@ -1,0 +1,13 @@
+
+.bp3-menu {
+	background-color:#90cdf4;
+	list-style: none;
+	padding: 1rem;
+	cursor: pointer;
+}
+.bp3-multi-select-tag-input-input {
+    color: #000;
+}
+@media (max-width: 576px) {
+
+}

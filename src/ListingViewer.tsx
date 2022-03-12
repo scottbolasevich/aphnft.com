@@ -6,7 +6,7 @@ import * as React from 'react'
 import {Transaction} from 'algosdk'
 import { useParams, useHistory } from 'react-router-dom'
 import { NumericInput } from '@blueprintjs/core'
-import { Button, Box, Container, Image, Text, HStack } from '@chakra-ui/react';
+import { Button, Box, Container, Image, Text, HStack, NumberInput, NumberInputField } from '@chakra-ui/react';
 
 import { 
     getListing, 
@@ -161,6 +161,9 @@ function ListingViewer(props: ListingViewerProps) {
                         min={1} 
                         max={10000} 
                     />
+                   {/*  <NumberInput size='m' inputMode={"numeric"}  min={1} max={10000} defaultValue={listing.price} maxW={100} onChange={checkSetPrice}>
+                        <NumberInputField />
+                    </NumberInput> */}
                     <Button 
                         onClick={handleUpdatePrice} 
                         disabled={!updateable}>Reprice</Button>
