@@ -2,8 +2,7 @@
 'use strict'
 
 import * as React from 'react'
-
-import {Transaction} from 'algosdk'
+import { Transaction } from 'algosdk'
 import { useParams, useHistory } from 'react-router-dom'
 import { NumericInput } from '@blueprintjs/core'
 import { Button, Box, Container, Image, Text, HStack, Link, NumberInput, NumberInputField } from '@chakra-ui/react';

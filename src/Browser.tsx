@@ -2,11 +2,37 @@
 'use strict'
 
 import * as React from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { useHistory, useParams, useLocation } from 'react-router-dom'
 import { getListings } from './lib/algorand'
 import { ListingCard } from './ListingCard'
 import { Wallet } from 'algorand-session-wallet'
-import { Button, Center, Container, FormLabel, NumberInput, NumberInputField, Stack, HStack } from '@chakra-ui/react';
+import {
+    Grid,
+    Center,
+    Container,
+    Select,
+    Text,
+    Stack,
+    NumberInputField,
+    NumberInput,
+    FormLabel,
+    HStack
+  } from "@chakra-ui/react";
+  import {
+    Table,
+    Thead,
+    Tbody,
+    Button,
+    Heading,
+    Tr,
+    Th,
+    Td,
+    TableCaption,
+    Spinner,
+    useToast
+  } from "@chakra-ui/react";
+  import Pagination from "@choc-ui/paginator";
 
 type BrowserProps = {
     history: any
@@ -15,6 +41,12 @@ type BrowserProps = {
 };
 
 export default function Browser(props: BrowserProps) {
+
+    ////START
+
+
+
+    ////END
     const {tag} = useParams()
     const filters = new URLSearchParams(useLocation().search)
     const history = useHistory()
@@ -37,7 +69,7 @@ export default function Browser(props: BrowserProps) {
         if(!loaded && filtersChanged)
             getListings(tag, minPrice, maxPrice).then((l)=>{ 
                 if(!subscribed) return
-
+                console.log("getListings", l)
                 setLoaded(true)
                 setListings(l) 
                 setFiltersChanged(false)
@@ -52,7 +84,7 @@ export default function Browser(props: BrowserProps) {
     function filterListings() { 
         const tagPath = tag?"tag/"+tag:""
 
-        history.push("/"+tagPath+"?min-price="+minPrice+"&max-price="+maxPrice) 
+        history.push("/explore/"+tagPath+"?min-price="+minPrice+"&max-price="+maxPrice) 
         setLoaded(false)
         setFiltersChanged(true)
     }
@@ -89,9 +121,15 @@ export default function Browser(props: BrowserProps) {
     return (
         <Stack spacing={3}>
             {priceFilter}
-            <Container>
+            <Grid
+            gap={3}
+            mt={20}
+            px={20}
+            templateColumns="repeat(5, 1fr)"
+            templateRows="repeat(2, 1fr)"
+            >
                 { l }
-            </Container>
+            </Grid>
         </Stack>
     )
 }

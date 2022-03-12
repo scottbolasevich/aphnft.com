@@ -1,5 +1,5 @@
 {
-    "domain": "aphnft.com",
+    "domain": "https://aphnft.com/",
     "algod":{
         "server":"https://testnet.algoexplorerapi.io",
         "port":0,
@@ -7,7 +7,7 @@
         "network": "TestNet"
     },
     "indexer": {
-        "server":"https://testnet.algoexplorerapi.io/idx2",
+        "server":"https://algoindexer.testnet.algoexplorerapi.io",
         "port":0,
         "token":""
     },

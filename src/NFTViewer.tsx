@@ -4,7 +4,7 @@
 import * as React from 'react'
 import {useParams, useHistory} from 'react-router-dom'
 import { tryGetNFT, isOptedIntoApp, getListingAddr } from './lib/algorand'
-import { Button, Box, Container, Flex, FormLabel, FormControl, HStack, Image, NumberInput, NumberInputField, Tag, Text} from '@chakra-ui/react';
+import { Button, Box, Container, Flex, FormLabel, FormControl, HStack, Image, NumberInput, NumberInputField, List, ListItem, Link, Tag, Text} from '@chakra-ui/react';
 import { Step, Steps, useSteps } from 'chakra-ui-steps';
 import Listing from './lib/listing'
 import {Wallet} from 'algorand-session-wallet'
@@ -34,11 +34,15 @@ export default function NFTViewer(props: NFTViewerProps) {
     
     React.useEffect(()=>{
         let subscribed = true
+        nft.asset_id=id;
+        setNFT(nft) 
         tryGetNFT(parseInt(id))
             .then((nft)=>{  
                 if(subscribed) setNFT(nft) 
             })
-            .catch((err)=>{ showErrorToaster("Couldn't find that asset") })
+            .catch((err)=>{ 
+                showErrorToaster("Couldn't find that asset") 
+            })
         return ()=>{subscribed=false}
     }, []);
 
@@ -165,20 +169,24 @@ export default function NFTViewer(props: NFTViewerProps) {
     };
     return (
         <Container>
+            {console.log("nftnftnft",nft)}
             <Box className='nft-card'>
                 <Container className='nft-image'>
-                    <Image alt='' src={nft.imgSrc()} />
+                    <Image alt='AlgoPhase NFT Marketplace' src={nft ? nft.imgSrc() : require('./img/placeholder.png')} />
                 </Container>
                 <Container p={0} pt={4} className='nft-details'>
                     <Container className='nft-name'>
-                        <Text><b>{nft.metadata.name}</b> - <i>{nft.metadata.properties.artist}</i></Text>
+                        <Text fontWeight="extrabold">{nft ? nft.metadata.name : 'N/A'}</Text> - <Text as='i'>{nft ? nft.metadata.properties.artist : 'Artist Name Not Found'}</Text>
                     </Container>
                     <Container pt={4} className='nft-token-id'>
-                        <Text>ASA: <a href={nft.explorerSrc()}><b>{nft.asset_id}</b></a></Text>
+                        <Text>ASA:</Text> 
+                        <Link href={nft ? nft.explorerSrc() : '#'}>
+                            <Text fontWeight="extrabold">{nft ? nft.asset_id : null}</Text>
+                        </Link>
                     </Container>
                 </Container>
                 <Container pt={4} className='nft-description'>
-                    <Text>{ nft.metadata.description }</Text>
+                    <Text>{nft ? nft.metadata.description : 'Description Not Found'}</Text>
                 </Container>
                     { editButtons }
                 <Container pt={4}>
@@ -250,7 +258,7 @@ function ListingDetails(props){
         <Container>
             <FormControl>
                 <FormLabel htmlFor="input-price">Price in Algos</FormLabel>
-                <NumberInput size='m' id='input-price' inputMode={"numeric"}  min={1} max={10000} defaultValue={props.price} maxW={100} onChange={handlePriceChange}>
+                <NumberInput size='m' id='input-price' inputMode={"numeric"} min={1} max={10000} defaultValue={props.price} maxW={100} onChange={handlePriceChange}>
                     <NumberInputField />
                 </NumberInput>
             </FormControl>
@@ -264,7 +272,7 @@ function ConfirmListingDetails(props){
             <h3>Listing:</h3>
             <p><b>Token:</b> {props.tokenId} </p>
             <p><b>Price:</b> {props.price} μAlgos</p> 
-            <p><b>Tags:</b> {props.tags.map(t=>{return <Tag>{t.name}</Tag>})}</p>
+            <p><b>Tags:</b><List spacing={3}>{props.tags.map(t=>{return <ListItem key={t.id}><Tag>{t.name}</Tag></ListItem>})}</List></p>
         </Container>
     )
 }

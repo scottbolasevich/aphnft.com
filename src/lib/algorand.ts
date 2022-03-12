@@ -80,9 +80,11 @@ export async function isOptedIntoAsset(address: string, idx: number): Promise<bo
 }
 
 export async function isListing(address: string): Promise<boolean> {
-    const client = getAlgodClient()
-    const result = await client.accountInformation(address).do()
-    const hasPriceToken = result['assets'].find((r)=>{ return r['asset-id'] == ps.application.price_id })
+    //const client = getAlgodClient()
+    const indexer  = getIndexer()
+    //const result = await client.accountInformation(address).do()
+    const result = await indexer.lookupAccountByID(address).do()
+    const hasPriceToken = result.account['assets'].find((r)=>{ return r['asset-id'] == ps.application.price_id })
     return hasPriceToken !== undefined
 }
 
@@ -92,13 +94,16 @@ export async function getListings(tagName: string, minPrice=0, maxPrice=0): Prom
     let token_id = ps.application.price_id
 
     if(tagName !== undefined){
+        console.log("tagName",tagName)
         const tag = new TagToken(tagName)
         const tt = await getTagToken(tag.getTokenName())
         if (tt.id == 0) return []
         token_id = tt.id
     }
+    console.log("token_id",token_id)
 
     let lookup = indexer.lookupAssetBalances(token_id)
+    
     if(tagName !== undefined){
         lookup = lookup.currencyGreaterThan(0)
     }else{
@@ -195,8 +200,11 @@ export async function getListing(addr: string): Promise<Listing> {
 }
 
 export async function getHoldingsFromListingAddress(address: string): Promise<Holdings> {
-    const client   = getAlgodClient()
-    const account = await client.accountInformation(address).do()
+    //const client   = getAlgodClient()
+    const indexer  = getIndexer()
+    const accountInfo = await indexer.lookupAccountByID(address).do()
+    const account  = accountInfo.account
+    //const account  = await client.accountInformation(address).do()
     const holdings  = { 'price':0, 'tags':[], 'nft':undefined, }
 
     const gets = []
@@ -232,15 +240,23 @@ export async function tryGetNFT(asset_id: number): Promise<NFT> {
         const token = await getToken(asset_id)
         return await NFT.fromToken(token)
     } catch (error) { 
-        showErrorToaster("Cant find asset_id" + asset_id + ": " + error)
+        showErrorToaster("Cant find asset_id: " + asset_id)
+        console.error("tryGetNFT - Cant find asset_id: ", asset_id + ": " + error);
     }
 
     return undefined 
 }
 
 export async function getToken(asset_id: number): Promise<any> {
-    const client = getAlgodClient()
-    return await client.getAssetByID(asset_id).do()
+    //const client = getAlgodClient()
+    const indexer  = getIndexer()
+    //const firstWay = await client.getAssetByID(asset_id).do()
+    //console.log("firstWay", firstWay);
+    const lookupAssetByID = await indexer.lookupAssetByID(asset_id).do()
+    //console.log("secWay", secWay);
+    //return await client.getAssetByID(asset_id).do()
+    return await lookupAssetByID.asset
+    //return await indexer.lookupAssetByID(asset_id).do()
 }
 
 export async function getOwner(asset_id: number):Promise<string> {

@@ -7,7 +7,6 @@ import { HStack, VStack, Modal, ModalBody, ModalOverlay, ModalContent, ModalHead
 import { NotAllowedIcon } from '@chakra-ui/icons'
 import { useEffect } from 'react'
 import { showErrorToaster } from './Toaster'
-import {platform_settings as ps } from './lib/platform-conf'
 import { useDisclosure } from "@chakra-ui/react"
 
 

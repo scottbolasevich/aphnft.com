@@ -159,8 +159,7 @@ export default function App(props: AppProps) {
                           updateWallet={updateWallet}
                           />
                     <MenuDivider />
-                    <MenuItem>My NFTs</MenuItem>
-                    <MenuItem>My Listings</MenuItem>
+                    <MenuItem>My Sales History</MenuItem>
                   </MenuList>
                 </Menu>
                 </Stack>

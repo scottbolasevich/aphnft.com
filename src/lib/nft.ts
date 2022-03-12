@@ -80,8 +80,11 @@ export class NFT {
     }
 
     static async fromToken(token: any): Promise<NFT> {
-
-        const nft = await getNFTFromMetadata(token['params']['url'])
+        
+        let checkUrlExt = token.params.url.split(/[#?]/)[0].split('.').pop().trim()
+        if (checkUrlExt!=='json') return undefined;
+        //const nft = await getNFTFromMetadata(token['params']['url'])
+        const nft = await getNFTFromMetadata(token.params.url)
 
         if (nft===undefined) return undefined;
 
