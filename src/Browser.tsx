@@ -2,35 +2,37 @@
 'use strict'
 
 import * as React from 'react'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { forwardRef } from "react"
 import { useHistory, useParams, useLocation } from 'react-router-dom'
 import { getListings } from './lib/algorand'
 import { ListingCard } from './ListingCard'
 import { Wallet } from 'algorand-session-wallet'
 import {
+    Box,
+    Button,
     Grid,
+    GridItem,
     Center,
     Container,
     Select,
     Text,
+    Flex,
     Stack,
     NumberInputField,
     NumberInput,
     FormLabel,
-    HStack
-  } from "@chakra-ui/react";
-  import {
+    HStack,
     Table,
     Thead,
     Tbody,
-    Button,
     Heading,
     Tr,
     Th,
     Td,
     TableCaption,
     Spinner,
-    useToast
+    useToast,
+    useBreakpointValue
   } from "@chakra-ui/react";
   import Pagination from "@choc-ui/paginator";
 
@@ -42,15 +44,10 @@ type BrowserProps = {
 
 export default function Browser(props: BrowserProps) {
 
-    ////START
-
-
-
-    ////END
     const {tag} = useParams()
     const filters = new URLSearchParams(useLocation().search)
     const history = useHistory()
-
+    const colSpan = useBreakpointValue({ base: 5, md: 1})
     const [listings, setListings] = React.useState([]);
     const [loaded, setLoaded] = React.useState(false)
 
@@ -63,7 +60,6 @@ export default function Browser(props: BrowserProps) {
     const [minPrice, setMinPrice] = React.useState(min)
     const [filtersChanged, setFiltersChanged] = React.useState(true)
 
-
     React.useEffect(()=>{
         let subscribed = true
         if(!loaded && filtersChanged)
@@ -73,6 +69,7 @@ export default function Browser(props: BrowserProps) {
                 setLoaded(true)
                 setListings(l) 
                 setFiltersChanged(false)
+                setLoading(false)
             })
 
         return ()=>{subscribed = false}
@@ -98,7 +95,71 @@ export default function Browser(props: BrowserProps) {
     if(loaded && listings.length == 0){
         l = [<h3 key='none' >No Listings... <a href='/mint'>mint</a> one?</h3>]
     }
-
+    ////START
+    const toast = useToast();
+    //const [data, setData] = React.useState([]);
+    
+    const [loading, setLoading] = React.useState(true);
+    const [current, setCurrent] = React.useState(1);
+    const pageSize = 10;
+    const offset = (current - 1) * pageSize;
+    //const posts = data.slice(offset, offset + pageSize);
+    console.log("nftlising",listings);
+    const posts = listings.slice(offset, offset + pageSize);
+     
+    /* React.useEffect(() => {
+      fetch("https://jsonplaceholder.typicode.com/posts")
+        .then((response) => response.json())
+        .then((json) => {
+          console.log("jsondata",json);
+          setData(json);
+          setLoading(false);
+        });
+    }, []);  */
+  /* 
+    React.useEffect(() => {
+        setData(l);
+        setLoading(false);
+      }, []); */
+     const Prev = React.forwardRef<HTMLInputElement>(
+        (props, ref) => {
+          return (
+            <Button ref={ref} {...props}>
+                Prev
+            </Button>
+          );
+        }
+      );
+    /* const Prev = forwardRef((props, ref) => (
+      <Button ref={ref} {...props}>
+        Prev
+      </Button>
+    )); */
+    
+    const Next = React.forwardRef<HTMLInputElement>(
+        (props, ref) => {
+          return (
+            <Button ref={ref} {...props}>
+                Next
+            </Button>
+          );
+        }
+      );
+    /* const Next = forwardRef((props, ref) => (
+      <Button ref={ref} {...props}>
+        Next
+      </Button>
+    )); */
+  
+    const itemRender = (_, type) => {
+      if (type === "prev") {
+        return Prev;
+      }
+      if (type === "next") {
+        return Next;
+      }
+    };
+    ////END
     // Only allow filtering by price if no tag is chosen
     const priceFilter = tag===undefined?(
         <Container p={2} maxW='container.xl'>
@@ -118,18 +179,56 @@ export default function Browser(props: BrowserProps) {
         </Container>
     ):<Container></Container>
 
-    return (
-        <Stack spacing={3}>
-            {priceFilter}
+    return loading ? (
+        <Container><Spinner /></Container>
+      ) : (
+        <>
+        <Box>
+        {priceFilter}
+        <Container centerContent={true} h={{ base: 50}}>
+        <Pagination
+                current={current}
+                onChange={(page) => {
+                    setCurrent(page);
+                    toast({
+                        title: "Pagination.",
+                        description: `You changed to page ${page}`,
+                        variant: "solid",
+                        duration: 9000,
+                        isClosable: true,
+                        position: "top-right"
+                    });
+                }}
+                pageSize={pageSize}
+                total={listings.length}
+                itemRender={itemRender}
+                paginationProps={{
+                display: "flex",
+                pos: "absolute",
+                left: "50%",
+                transform: "translateX(-50%)"
+                }}
+                colorScheme="red"
+                focusRing="green"
+            />
+            </Container>
+        </Box>
             <Grid
-            gap={3}
-            mt={20}
-            px={20}
-            templateColumns="repeat(5, 1fr)"
-            templateRows="repeat(2, 1fr)"
-            >
-                { l }
+                templateRows="repeat(2, 1fr)"
+                templateColumns="repeat(5, 1fr)"
+                gap={5}
+                px={{ base: 0, md: 5}}
+                mt={{ base: 0, md: 5}}
+            > 
+                {posts.map((post) => (
+                    <GridItem colSpan={colSpan} key={post.contract_addr}><ListingCard key={post.contract_addr} listing={post} /></GridItem>
+                ))}
             </Grid>
-        </Stack>
-    )
+        <Container centerContent={true}>
+            <Text p={[0,5,10]}>
+                Page {current}{" "}
+            </Text>
+        </Container>
+    </>
+  );
 }
